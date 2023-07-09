@@ -1,368 +1,141 @@
 #include <iostream>
-#include <conio.h>
-#include <stdlib.h>
 #include <fstream>
-#include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-struct car
-{
-    string driver;
-    string carname;
-    string carid;
-    int time;
+struct Car {
+    string driverName;
+    string carName;
+    string carId;
+    int timeStay;
 };
 
-class Parking
-{
+class ParkingLot {
+private:
+    vector<Car> parkedCars;
+    string fileName;
+
 public:
-    void park(Parking);
-    void car_detail();
-    void add_expense(car CAR[], int);
-    void expense();
-    void remove_car();
+    ParkingLot(const string& filename);
+    void parkCar();
+    void displayCarDetails();
+    void removeCar();
+    void saveToFile();
 };
 
-int num = 0;
+ParkingLot::ParkingLot(const string& filename) : fileName(filename) {}
 
-void Parking ::park(Parking obj)
-{
-   cout << "                        -------------> Car Parking System <-------------" << endl;
-   ofstream out;
-   car CAR[100];
-   out.open("parking.txt", _S_app); 
-   /*
-   _S_app is an openmode flag that specifies the mode in which the file is opened. 
-   In this case, _S_app stands for "append mode," 
-   which means that the content will be added to the end of the file if it already exists. 
-   If the file does not exist, a new file will be created.
-   */
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Enter your name : ";
-    getchar();
-    getline(cin, CAR[num].driver);
+void ParkingLot::parkCar() {
+    Car newCar;
+    cout << "Enter driver name: ";
+    cin.ignore();
+    getline(cin, newCar.driverName);
+    cout << "Enter car name: ";
+    getline(cin, newCar.carName);
+    cout << "Enter car ID: ";
+    getline(cin, newCar.carId);
+    cout << "Enter time of stay (in hours): ";
+    cin >> newCar.timeStay;
 
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Enter your car's name : ";
-    getline(cin, CAR[num].carname);
+    parkedCars.push_back(newCar);
 
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Enter your car's number plate: ";
-    cin >> CAR[num].carid;
+    cout << "Car parked successfully!" << endl;
 
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Enter your time stay (In hours) : ";
-    cin >> CAR[num].time;
-
-    out << "Car Name : " << CAR[num].carname << endl
-        << "Car Id : " << CAR[num].carid << endl
-        << "Driver Name : " << CAR[num].driver << endl
-        << "Car Time Stay : " << CAR[num].time << " hours" << endl;
-
-    add_expense(CAR, num);
-
-    num++;
-    out.close();
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Your car is parked!!!" << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Press Enter Key To Return" << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    getch();
+    saveToFile();
 }
 
-void Parking ::car_detail()
-{
-    system("cls");
-    int i = 0;
-    string id;
-    string line;
-    ifstream in;
-    cout << "                        -------------> Your Car's Details <-------------" << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Enter your CarID : ";
-    cin >> id;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
+void ParkingLot::displayCarDetails() {
+    cout << "Enter car ID: ";
+    string carId;
+    cin.ignore();
+    getline(cin, carId);
 
-    in.open("parking.txt");
-    while(in.eof() == 0)
-    {
-        getline(in, line);
-        size_t found = line.find(id);
-        if (found != string::npos)
-        {
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "Your car's details are : " << endl;
-            cout << line;
-            getline(in, line);
-            cout << endl;
-            cout << line << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "Press Enter Key To Return" << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            getch();
-            in.close();
-            i++;
-            break;
-        }
-    }
+    auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
+        return car.carId == carId;
+    });
 
-    in.close();
-    if (i == 0)
-    {
-        cout << "CarID " << id << " Not Found" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "TRY AGAIN! (Use correct CarID)" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "Press Enter Key To Return" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        getch();
+    if (it != parkedCars.end()) {
+        cout << "Car Details:" << endl;
+        cout << "Driver Name: " << it->driverName << endl;
+        cout << "Car Name: " << it->carName << endl;
+        cout << "Car ID: " << it->carId << endl;
+        cout << "Time of Stay: " << it->timeStay << " hours" << endl;
+    } else {
+        cout << "Car not found!" << endl;
     }
 }
 
-void Parking ::add_expense(car CAR[], int num)
-{
-    ofstream out;
+void ParkingLot::removeCar() {
+    cout << "Enter car ID: ";
+    string carId;
+    cin.ignore();
+    getline(cin, carId);
 
-    out.open("parking.txt", _S_app);
+    auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
+        return car.carId == carId;
+    });
 
-    out << "Car ID: " << CAR[num].carid << endl
-        << "Car Name: " << CAR[num].carname << endl
-        << "Driver Name: " << CAR[num].driver << endl
-        << "Car Time Stay: " << CAR[num].time << " hours" << endl
-        << "Total Expense: " << CAR[num].time * 100 << " Rupees" << endl;
+    if (it != parkedCars.end()) {
+        parkedCars.erase(it);
+        cout << "Car removed from the parking lot!" << endl;
 
-    out.close();
-}
-
-void Parking ::expense()
-{
-    system("cls");
-    string id, line;
-    int i = 0;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << endl;
-    cout << "                        -------------> Car Parking Expenses <-------------" << endl;
-    cout << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-
-    cout << "Enter your CarID : ";
-    cin >> id;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-
-    ifstream in;
-    in.open("parking.txt");
-    while (in.eof() == 0)
-    {
-    getline(in, line);
-    size_t found = line.find(id);
-    if (found != string::npos)
-        {
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "Your car parking expense details are : " << endl;
-            cout << line;
-            getline(in, line);
-            cout << endl;
-            cout << line << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "Press Enter Key To Return" << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            getch();
-            in.close();
-            i++;
-            break;
-        }
-    }
-
-    in.close();
-
-    if (i == 0)
-    {
-        cout << "CarID " << id << " Not Found" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "TRY AGAIN! (Use correct CarID)" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "Press Enter Key To Return" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        getch();
+        saveToFile();
+    } else {
+        cout << "Car not found!" << endl;
     }
 }
 
-void Parking ::remove_car()
-{
-    system("cls");
-    string id;
-    string line, nextline;
+void ParkingLot::saveToFile() {
+    ofstream outputFile(fileName);
 
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << endl;
-    cout << "                        -------------> Car Parking Check Out System <-------------"
-         << endl;
-    cout << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-
-    cout << "Enter your CarID : ";
-    cin >> id;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;    
-
-    ifstream in;
-    ofstream out;
-    in.open("parking.txt");
-    out.open("tmp.txt", _S_app);
-    while (in.eof() == 0)
-    {
-        getline(in, line);
-        size_t found = line.find(id);
-        if (found != string::npos)
-        {
-            getline(in, line);
-            getline(in, line);
-        }
-        out << line;
-        out << endl;
+    for (const auto& car : parkedCars) {
+        outputFile << "Driver Name: " << car.driverName << endl;
+        outputFile << "Car Name: " << car.carName << endl;
+        outputFile << "Car ID: " << car.carId << endl;
+        outputFile << "Time of Stay: " << car.timeStay << " hours" << endl;
+        outputFile << "----------------------" << endl;
     }
 
-    in.close();
-    out.close();
-
-    remove("parking.txt");
-    rename("temp.txt", "parking.txt");
-
-    in.open("parking_expense.txt");
-    out.open("tmp_expense.txt", _S_app);
-    while (in.eof() == 0)
-    {
-        getline(in, nextline);
-        size_t found = nextline.find(id);
-        if (found != string::npos)
-        {
-            getline(in, nextline);
-            getline(in, nextline);
-        }
-        out << nextline;
-        out << endl;
-    }
-
-    in.close();
-    out.close();
-
-    remove("parking_expense.txt");
-    rename("tmp_expense.txt", "parking_expense.txt");
-
-    cout << "Good Bye" << endl
-         << "Thanks For Choosing Us!" << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    cout << "Press Enter Key To Return" << endl;
-    cout << "---------------------------------------------------";
-    cout << "---------------------------------------------------" << endl;
-    getch();
-
+    outputFile.close();
+    cout << "Data saved to file!" << endl;
 }
 
-int main()
-{
-    system("cls");
-    Parking obj;
-    while (1)
-    {
+int main() {
+    ParkingLot parkingLot("parking_lot.txt");
+    int choice;
+
+    do {
         system("cls");
-        int choice;
-        cout << "                        -------------> Car Parking System <-------------" << endl
-             << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "1. Park Your Car " << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "2. View Your Car Details" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "3. Check Expenses" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "4. Remove Your Car" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "5. EXIT" << endl;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
-        cout << "ENTER YOUR CHOICE : ";
+        cout << "Car Parking Management System" << endl;
+        cout << "1. Park a Car" << endl;
+        cout << "2. Display Car Details" << endl;
+        cout << "3. Remove a Car" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
         cin >> choice;
-        cout << "---------------------------------------------------";
-        cout << "---------------------------------------------------" << endl;
 
-        switch (choice)
-        {
-        case 1:
-            char yn;
-            cout << "Do Your Want To Continue (y/n) : ";
-            cin >> yn;
-            system("cls");
-            if (yn == 'y')
-            {
-                obj.park(obj);
-            }
-            system("cls");
-            break;
-
-        case 2:
-            obj.car_detail();
-            break;
-
-        case 3:
-            obj.expense();
-            break;
-
-        case 4:
-            obj.remove_car();
-            break;
-
-        case 5:
-            cout << endl;
-            cout << "---------------------------------------------------";
-            cout << "---------------------------------------------------" << endl;
-            cout << "Press Enter Key To EXIT";
-            getch();
-            exit(0);
-
-        default:
-            system("cls");
-            cout << "You Entered A Wrong Choice!" << endl;
-            break;
+        switch (choice) {
+            case 1:
+                parkingLot.parkCar();
+                break;
+            case 2:
+                parkingLot.displayCarDetails();
+                break;
+            case 3:
+                parkingLot.removeCar();
+                break;
+            case 4:
+                cout << "Exiting the program..." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
         }
-    }
+
+        cout << endl;
+        system("pause");
+
+    } while (choice != 4);
 
     return 0;
 }
