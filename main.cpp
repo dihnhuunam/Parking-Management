@@ -52,9 +52,14 @@ void ParkingLot::displayCarDetails()
     cin.ignore();
     getline(cin, carId);
 
+    /*
+    This function returns an iterator to the first element in the range [first, last) for which pred(Unary Function) returns true. 
+    If no such element is found, the function returns last
+    */
     // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
     //     return car.carId == carId;
     // });
+
     vector<Car>::iterator it = parkedCars.begin();
     while(it != parkedCars.end())
     {
@@ -69,6 +74,7 @@ void ParkingLot::displayCarDetails()
         cout << "Car Name: " << it->carName << endl;
         cout << "Car ID: " << it->carId << endl;
         cout << "Time of Stay: " << it->timeStay << " hours" << endl;
+        cout << "Fee: " << it->timeStay * 80 << ".000 (VND)" << endl;
     } 
     else 
     {
