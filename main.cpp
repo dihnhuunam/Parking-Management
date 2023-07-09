@@ -90,10 +90,17 @@ void ParkingLot::removeCar()
     cin.ignore();
     getline(cin, carId);
 
-    auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
-        return car.carId == carId;
-    });
-
+    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
+    //     return car.carId == carId;
+    // });
+    
+    vector<Car>::iterator it = parkedCars.begin();
+    while(it != parkedCars.end())
+    {
+        if(it -> carId == carId) break;
+        it++;
+    }
+    
     if (it != parkedCars.end()) 
     {
         parkedCars.erase(it);
