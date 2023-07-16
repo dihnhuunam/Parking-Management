@@ -4,14 +4,31 @@
 #include <algorithm>
 using namespace std;
 
-struct Car {
+class Car
+{
+private:
     string driverName;
     string carName;
     string carId;
     int timeStay;
+
+public:
+    Car(string driverName, string carName, string carId, int timeStay)
+    {
+        this -> driverName = driverName;
+        this -> carName = carName;
+        this -> carId = carId;
+        this -> timeStay = timeStay;
+    }
+
+    string getDriverName() const { return driverName; }
+    string getCarName() const { return carName; }
+    string getCarId() const { return carId; }
+    int getTimeStay() const { return timeStay; }
 };
 
-class ParkingLot {
+class ParkingLot
+{
 private:
     vector<Car> parkedCars;
     string fileName;
@@ -22,29 +39,41 @@ public:
     void displayCarDetails();
     void removeCar();
     void saveToFile();
+    void readFromFile();
+    void searchRecord();
 };
 
-ParkingLot::ParkingLot(const string& filename) : fileName(filename) {}
+ParkingLot::ParkingLot(const string& filename) : fileName(filename)
+{
+    readFromFile();
+}
 
-void ParkingLot::parkCar() 
+void ParkingLot::parkCar()
 {
     system("cls");
-    Car newCar;
+    string driverName, carName, carId;
+    int timeStay;
+
     cout << "Enter driver name: ";
     cin.ignore();
-    getline(cin, newCar.driverName);
+    getline(cin, driverName);
+
     cout << "Enter car name: ";
-    getline(cin, newCar.carName);
+    getline(cin, carName);
+
     cout << "Enter car ID: ";
-    getline(cin, newCar.carId);
+    getline(cin, carId);
+
     cout << "Enter time of stay (in hours): ";
-    cin >> newCar.timeStay;
+    cin >> timeStay;
+
+    Car newCar(driverName, carName, carId, timeStay);
     parkedCars.push_back(newCar);
     cout << "Car parked successfully!" << endl;
     saveToFile();
 }
 
-void ParkingLot::displayCarDetails() 
+void ParkingLot::displayCarDetails()
 {
     system("cls");
     cout << "Enter car ID: ";
@@ -52,37 +81,27 @@ void ParkingLot::displayCarDetails()
     cin.ignore();
     getline(cin, carId);
 
-    /*
-    This function returns an iterator to the first element in the range [first, last) for which pred(Unary Function) returns true. 
-    If no such element is found, the function returns last
-    */
-    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
-    //     return car.carId == carId;
-    // });
-
-    vector<Car>::iterator it = parkedCars.begin();
-    while(it != parkedCars.end())
+    auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car)
     {
-        if(it -> carId == carId) break;
-        it++;
-    }
+        return car.getCarId() == carId;
+    });
 
-    if (it != parkedCars.end()) 
+    if (it != parkedCars.end())
     {
         cout << "Car Details:" << endl;
-        cout << "Driver Name: " << it->driverName << endl;
-        cout << "Car Name: " << it->carName << endl;
-        cout << "Car ID: " << it->carId << endl;
-        cout << "Time of Stay: " << it->timeStay << " hours" << endl;
-        cout << "Fee: " << it->timeStay * 80 << ".000 (VND)" << endl;
-    } 
-    else 
+        cout << "Driver Name: " << it->getDriverName() << endl;
+        cout << "Car Name: " << it->getCarName() << endl;
+        cout << "Car ID: " << it->getCarId() << endl;
+        cout << "Time of Stay: " << it->getTimeStay() << " hours" << endl;
+        cout << "Fee: " << it->getTimeStay() * 80 << ".000 (VND)" << endl;
+    }
+    else
     {
         cout << "Car not found!" << endl;
     }
 }
 
-void ParkingLot::removeCar() 
+void ParkingLot::removeCar()
 {
     system("cls");
     cout << "Enter car ID: ";
@@ -90,40 +109,34 @@ void ParkingLot::removeCar()
     cin.ignore();
     getline(cin, carId);
 
-    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car) {
-    //     return car.carId == carId;
-    // });
-    
-    vector<Car>::iterator it = parkedCars.begin();
-    while(it != parkedCars.end())
+    auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car)
     {
-        if(it -> carId == carId) break;
-        it++;
-    }
-    
-    if (it != parkedCars.end()) 
+        return car.getCarId() == carId;
+    });
+
+    if (it != parkedCars.end())
     {
         parkedCars.erase(it);
         cout << "Car removed from the parking lot!" << endl;
 
         saveToFile();
-    } 
-    else 
+    }
+    else
     {
         cout << "Car not found!" << endl;
     }
 }
 
-void ParkingLot::saveToFile() 
+void ParkingLot::saveToFile()
 {
     ofstream outputFile(fileName);
 
-    for (const auto& car : parkedCars) 
+    for (const auto& car : parkedCars)
     {
-        outputFile << "Driver Name: " << car.driverName << endl;
-        outputFile << "Car Name: " << car.carName << endl;
-        outputFile << "Car ID: " << car.carId << endl;
-        outputFile << "Time of Stay: " << car.timeStay << " hours" << endl;
+        outputFile << "Driver Name: " << car.getDriverName() << endl;
+        outputFile << "Car Name: " << car.getCarName() << endl;
+        outputFile << "Car ID: " << car.getCarId() << endl;
+        outputFile << "Time of Stay: " << car.getTimeStay() << " hours" << endl;
         outputFile << "----------------------" << endl;
     }
 
@@ -131,41 +144,90 @@ void ParkingLot::saveToFile()
     cout << "Data saved to file!" << endl;
 }
 
-int main() 
+void ParkingLot::readFromFile()
 {
-    ParkingLot parkingLot("parking_lot.txt");
+    ifstream inputFile(fileName);
+    if (!inputFile)
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
+
+    string line;
+    while (getline(inputFile, line))
+    {
+        size_t driverNamePos = line.find("Driver Name: ");
+        size_t carNamePos = line.find("Car Name: ");
+        size_t carIdPos = line.find("Car ID: ");
+        size_t timeStayPos = line.find("Time of Stay: ");
+
+        if (driverNamePos != string::npos && carNamePos != string::npos && carIdPos != string::npos && timeStayPos != string::npos)
+        {
+            string driverName = line.substr(driverNamePos + 13);
+            getline(inputFile, line);
+            string carName = line.substr(carNamePos + 10);
+            getline(inputFile, line);
+            string carId = line.substr(carIdPos + 8);
+            getline(inputFile, line);
+            int timeStay = stoi(line.substr(timeStayPos + 14));
+
+            Car car(driverName, carName, carId, timeStay);
+            parkedCars.push_back(car);
+        }
+    }
+
+    inputFile.close();
+    cout << "Data loaded from file!" << endl;
+}
+
+void ParkingLot::searchRecord()
+{
     int choice;
     do {
         system("cls");
-        cout << "Car Parking Management System" << endl;
-        cout << "1. Park a Car" << endl;
-        cout << "2. Display Car Details" << endl;
-        cout << "3. Remove a Car" << endl;
-        cout << "4. Exit" << endl;
-        cout << "Enter your choice: ";
+        cout << "\t\t\t\tCar Parking Management System" << endl;
+        cout << "\n\n\t\t\t--------------------------------------------------\n";
+        cout << "\t\t\t\t    Car Parking Management System\n";
+        cout << "\t\t\t--------------------------------------------------\n";
+        cout << "\t\t\t\t1. Park a Car" << endl;
+        cout << "\t\t\t\t2. Display Car Details" << endl;
+        cout << "\t\t\t\t3. Remove a Car" << endl;
+        cout << "\t\t\t\t4. Exit" << endl;
+        cout << "\n\n\n\t\t\t\tEnter your choice: ";
         cin >> choice;
-        switch (choice) 
+        switch (choice)
         {
-            case 1:
-                parkingLot.parkCar();
-                break;
-            case 2:
-                parkingLot.displayCarDetails();
-                break;
-            case 3:
-                parkingLot.removeCar();
-                break;
-            case 4:
-                system("cls");
-                cout << "SEE YOU AGAIN..." << endl;
-                break;
-            default:
-                system("cls");
-                cout << "Invalid choice. Please try again." << endl;
+        case 1:
+            parkCar();
+        cout << "Press any key to continue......\n";
+            break;
+        case 2:
+            displayCarDetails();
+            cout << "Press any key to continue......\n";
+            break;
+        case 3:
+            removeCar();
+        cout << "Press any key to continue......\n";
+            break;
+        case 4:
+            system("cls");
+            cout << "SEE YOU AGAIN..." << endl;
+            break;
+        default:
+            system("cls");
+            cout << "Invalid choice. Please try again." << endl;
+            cout << "Press any key to continue......\n";
+            cin.ignore();
         }
         cout << endl;
-        system("pause");
+        cin.ignore();
 
-    }while (choice != 4);
+    } while (choice != 4);
+}
+
+int main()
+{
+    ParkingLot parkingLot("parking_lot.txt");
+    parkingLot.searchRecord();
     return 0;
 }
