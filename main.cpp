@@ -14,8 +14,11 @@ private:
 
 public:
     Car(const string& driverName, const string& carName, const string& carId, int timeStay)
-        : driverName(driverName), carName(carName), carId(carId), timeStay(timeStay)
     {
+        this->driverName = driverName;
+        this->carName = carName;
+        this->carId = carId;
+        this->timeStay = timeStay;
     }
 
     string getDriverName() const
@@ -141,7 +144,7 @@ void ParkingLot::removeCar()
 
 void ParkingLot::saveToFile()
 {
-    ofstream outputFile(fileName, ios::app);
+    ofstream outputFile(fileName);
 
     if (!outputFile)
     {
@@ -159,7 +162,6 @@ void ParkingLot::saveToFile()
     }
 
     outputFile.close();
-    cout << "Data saved to file!" << endl;
 }
 
 void ParkingLot::readFromFile()
@@ -195,11 +197,11 @@ void ParkingLot::readFromFile()
     }
 
     inputFile.close();
-    cout << "Data loaded from file!" << endl;
 }
 
 void ParkingLot::searchRecord()
 {
+    readFromFile();
     int choice;
     do {
         system("cls");
