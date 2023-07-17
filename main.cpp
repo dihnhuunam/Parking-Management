@@ -13,18 +13,30 @@ private:
     int timeStay;
 
 public:
-    Car(string driverName, string carName, string carId, int timeStay)
+    Car(const string& driverName, const string& carName, const string& carId, int timeStay)
+        : driverName(driverName), carName(carName), carId(carId), timeStay(timeStay)
     {
-        this -> driverName = driverName;
-        this -> carName = carName;
-        this -> carId = carId;
-        this -> timeStay = timeStay;
     }
 
-    string getDriverName() const { return driverName; }
-    string getCarName() const { return carName; }
-    string getCarId() const { return carId; }
-    int getTimeStay() const { return timeStay; }
+    string getDriverName() const
+    {
+        return driverName;
+    }
+
+    string getCarName() const
+    {
+        return carName;
+    }
+
+    string getCarId() const
+    {
+        return carId;
+    }
+
+    int getTimeStay() const
+    {
+        return timeStay;
+    }
 };
 
 class ParkingLot
@@ -129,7 +141,13 @@ void ParkingLot::removeCar()
 
 void ParkingLot::saveToFile()
 {
-    ofstream outputFile(fileName);
+    ofstream outputFile(fileName, ios::app);
+
+    if (!outputFile)
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
 
     for (const auto& car : parkedCars)
     {
@@ -185,7 +203,6 @@ void ParkingLot::searchRecord()
     int choice;
     do {
         system("cls");
-        cout << "\t\t\t\tCar Parking Management System" << endl;
         cout << "\n\n\t\t\t--------------------------------------------------\n";
         cout << "\t\t\t\t    Car Parking Management System\n";
         cout << "\t\t\t--------------------------------------------------\n";
@@ -199,7 +216,7 @@ void ParkingLot::searchRecord()
         {
         case 1:
             parkCar();
-        cout << "Press any key to continue......\n";
+            cout << "Press any key to continue......\n";
             break;
         case 2:
             displayCarDetails();
@@ -207,7 +224,7 @@ void ParkingLot::searchRecord()
             break;
         case 3:
             removeCar();
-        cout << "Press any key to continue......\n";
+            cout << "Press any key to continue......\n";
             break;
         case 4:
             system("cls");
