@@ -108,7 +108,7 @@ void ParkingLot::displayCarDetails()
         cout << "Car Name: " << it->getCarName() << endl;
         cout << "Car ID: " << it->getCarId() << endl;
         cout << "Time of Stay: " << it->getTimeStay() << " hours" << endl;
-        cout << "Fee: " << it->getTimeStay() * 80 << ".000 (VND)" << endl;
+        cout << "Fee: " << it->getTimeStay() * 40 << ".000 (VND)" << endl;
     }
     else
     {
@@ -158,6 +158,7 @@ void ParkingLot::saveToFile()
         outputFile << "Car Name: " << car.getCarName() << endl;
         outputFile << "Car ID: " << car.getCarId() << endl;
         outputFile << "Time of Stay: " << car.getTimeStay() << " hours" << endl;
+        outputFile << "Fee: " << car.getTimeStay() * 40 << ".000 (VND)"<< endl;  
         outputFile << "----------------------" << endl;
     }
 
