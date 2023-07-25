@@ -13,7 +13,7 @@ private:
     int timeStay;
 
 public:
-    Car(string& driverName, string& carName, string& carId, int timeStay)
+    Car(string& driverName, string& carName, string& carId, int& timeStay)
     {
         this->driverName = driverName;
         this->carName = carName;
@@ -54,12 +54,14 @@ public:
     void displayCarDetails();
     void removeCar();
     void saveToFile();
+    // void readFromFile();
     void searchRecord();
 };
 
 ParkingLot::ParkingLot(string fileName)
 {
     this -> fileName = fileName;
+    // readFromFile();
 }
 
 void ParkingLot::parkCar()
@@ -188,23 +190,20 @@ void ParkingLot::saveToFile()
 //         return;
 //     }
 
-//     string line;
+//     string driverName, carName, carId, line;
+//     int timeStay;
+
 //     while (getline(inputFile, line))
 //     {
-//         size_t driverNamePos = line.find("Driver Name: ");
-//         size_t carNamePos = line.find("Car Name: ");
-//         size_t carIdPos = line.find("Car ID: ");
-//         size_t timeStayPos = line.find("Time of Stay: ");
-
-//         if (driverNamePos != string::npos && carNamePos != string::npos && carIdPos != string::npos && timeStayPos != string::npos)
+//         if (line.find("Driver Name: ") != string::npos)
 //         {
-//             string driverName = line.substr(driverNamePos + 13);
+//             driverName = line.substr(13);
 //             getline(inputFile, line);
-//             string carName = line.substr(carNamePos + 10);
+//             carName = line.substr(10);
 //             getline(inputFile, line);
-//             string carId = line.substr(carIdPos + 8);
+//             carId = line.substr(8);
 //             getline(inputFile, line);
-//             int timeStay = stoi(line.substr(timeStayPos + 14));
+//             timeStay = stoi(line.substr(14));
 
 //             Car car(driverName, carName, carId, timeStay);
 //             parkedCars.push_back(car);
@@ -213,6 +212,7 @@ void ParkingLot::saveToFile()
 
 //     inputFile.close();
 // }
+
 
 void ParkingLot::searchRecord()
 {
@@ -232,15 +232,15 @@ void ParkingLot::searchRecord()
         {
         case 1:
             parkCar();
-            cout << "Press any key to continue......\n";
+            cout << "\nPress any key to continue......\n";
             break;
         case 2:
             displayCarDetails();
-            cout << "Press any key to continue......\n";
+            cout << "\nPress any key to continue......\n";
             break;
         case 3:
             removeCar();
-            cout << "Press any key to continue......\n";
+            cout << "\nPress any key to continue......\n";
             break;
         case 4:
             system("cls");
@@ -249,7 +249,7 @@ void ParkingLot::searchRecord()
         default:
             system("cls");
             cout << "Invalid choice. Please try again." << endl;
-            cout << "Press any key to continue......\n";
+            cout << "\nPress any key to continue......\n";
             cin.ignore();
         }
         cout << endl;
@@ -261,6 +261,7 @@ void ParkingLot::searchRecord()
 int main()
 {
     ParkingLot parkingLot("parking_lot.txt");
+    // parkingLot.readFromFile();
     parkingLot.searchRecord();
     return 0;
 }
