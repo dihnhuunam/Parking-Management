@@ -1,0 +1,6 @@
+Driver Name: Dinh Huu Nam 
+Car Name: BMW
+Car ID: 29H1 27873
+Time of Stay: 12 hours
+Fee: 480.000 (VND)
+----------------------

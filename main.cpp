@@ -13,7 +13,7 @@ private:
     int timeStay;
 
 public:
-    Car(const string& driverName, const string& carName, const string& carId, int timeStay)
+    Car(string& driverName, string& carName, string& carId, int timeStay)
     {
         this->driverName = driverName;
         this->carName = carName;
@@ -21,22 +21,22 @@ public:
         this->timeStay = timeStay;
     }
 
-    string getDriverName() const
+    string getDriverName() 
     {
         return driverName;
     }
 
-    string getCarName() const
+    string getCarName() 
     {
         return carName;
     }
 
-    string getCarId() const
+    string getCarId() 
     {
         return carId;
     }
 
-    int getTimeStay() const
+    int getTimeStay() 
     {
         return timeStay;
     }
@@ -49,7 +49,7 @@ private:
     string fileName;
 
 public:
-    ParkingLot(const string& filename);
+    ParkingLot(string filename);
     void parkCar();
     void displayCarDetails();
     void removeCar();
@@ -57,7 +57,7 @@ public:
     void searchRecord();
 };
 
-ParkingLot::ParkingLot(const string& fileName)
+ParkingLot::ParkingLot(string fileName)
 {
     this -> fileName = fileName;
 }
@@ -96,7 +96,7 @@ void ParkingLot::displayCarDetails()
     cin.ignore();
     getline(cin, carId);
 
-    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car)
+    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&]( Car& car)
     // {
     //     return car.getCarId() == carId;
     // });
@@ -131,7 +131,7 @@ void ParkingLot::removeCar()
     cin.ignore();
     getline(cin, carId);
 
-    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&](const Car& car)
+    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&]( Car& car)
     // {
     //     return car.getCarId() == carId;
     // });
@@ -166,7 +166,7 @@ void ParkingLot::saveToFile()
         return;
     }
 
-    for (const auto& car : parkedCars)
+    for ( auto& car : parkedCars)
     {
         outputFile << "Driver Name: " << car.getDriverName() << endl;
         outputFile << "Car Name: " << car.getCarName() << endl;
@@ -178,6 +178,41 @@ void ParkingLot::saveToFile()
 
     outputFile.close();
 }
+
+// void ParkingLot::readFromFile()
+// {
+//     ifstream inputFile(fileName);
+//     if (!inputFile)
+//     {
+//         cout << "Error opening file!" << endl;
+//         return;
+//     }
+
+//     string line;
+//     while (getline(inputFile, line))
+//     {
+//         size_t driverNamePos = line.find("Driver Name: ");
+//         size_t carNamePos = line.find("Car Name: ");
+//         size_t carIdPos = line.find("Car ID: ");
+//         size_t timeStayPos = line.find("Time of Stay: ");
+
+//         if (driverNamePos != string::npos && carNamePos != string::npos && carIdPos != string::npos && timeStayPos != string::npos)
+//         {
+//             string driverName = line.substr(driverNamePos + 13);
+//             getline(inputFile, line);
+//             string carName = line.substr(carNamePos + 10);
+//             getline(inputFile, line);
+//             string carId = line.substr(carIdPos + 8);
+//             getline(inputFile, line);
+//             int timeStay = stoi(line.substr(timeStayPos + 14));
+
+//             Car car(driverName, carName, carId, timeStay);
+//             parkedCars.push_back(car);
+//         }
+//     }
+
+//     inputFile.close();
+// }
 
 void ParkingLot::searchRecord()
 {
