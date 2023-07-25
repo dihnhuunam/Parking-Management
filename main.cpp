@@ -54,14 +54,14 @@ public:
     void displayCarDetails();
     void removeCar();
     void saveToFile();
-    // void readFromFile();
+    void readFromFile();
     void searchRecord();
 };
 
 ParkingLot::ParkingLot(string fileName)
 {
     this -> fileName = fileName;
-    // readFromFile();
+    readFromFile();
 }
 
 void ParkingLot::parkCar()
@@ -181,37 +181,37 @@ void ParkingLot::saveToFile()
     outputFile.close();
 }
 
-// void ParkingLot::readFromFile()
-// {
-//     ifstream inputFile(fileName);
-//     if (!inputFile)
-//     {
-//         cout << "Error opening file!" << endl;
-//         return;
-//     }
+void ParkingLot::readFromFile()
+{
+    ifstream inputFile(fileName);
+    if (!inputFile)
+    {
+        cout << "Error opening file!" << endl;
+        return;
+    }
 
-//     string driverName, carName, carId, line;
-//     int timeStay;
+    string driverName, carName, carId, line;
+    int timeStay;
 
-//     while (getline(inputFile, line))
-//     {
-//         if (line.find("Driver Name: ") != string::npos)
-//         {
-//             driverName = line.substr(13);
-//             getline(inputFile, line);
-//             carName = line.substr(10);
-//             getline(inputFile, line);
-//             carId = line.substr(8);
-//             getline(inputFile, line);
-//             timeStay = stoi(line.substr(14));
+    while (getline(inputFile, line))
+    {
+        if (line.find("Driver Name: ") != string::npos)
+        {
+            driverName = line.substr(13);
+            getline(inputFile, line);
+            carName = line.substr(10);
+            getline(inputFile, line);
+            carId = line.substr(8);
+            getline(inputFile, line);
+            timeStay = stoi(line.substr(14));
 
-//             Car car(driverName, carName, carId, timeStay);
-//             parkedCars.push_back(car);
-//         }
-//     }
+            Car car(driverName, carName, carId, timeStay);
+            parkedCars.push_back(car);
+        }
+    }
 
-//     inputFile.close();
-// }
+    inputFile.close();
+}
 
 
 void ParkingLot::searchRecord()
@@ -261,7 +261,7 @@ void ParkingLot::searchRecord()
 int main()
 {
     ParkingLot parkingLot("parking_lot.txt");
-    // parkingLot.readFromFile();
+    parkingLot.readFromFile();
     parkingLot.searchRecord();
     return 0;
 }
