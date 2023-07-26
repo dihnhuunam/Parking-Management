@@ -133,29 +133,20 @@ void ParkingLot::removeCar()
     cin.ignore();
     getline(cin, carId);
 
-    // auto it = find_if(parkedCars.begin(), parkedCars.end(), [&]( Car& car)
-    // {
-    //     return car.getCarId() == carId;
-    // });
-
     vector<Car>::iterator it = parkedCars.begin();
-    while(it != parkedCars.end())
+    while (it != parkedCars.end())
     {
-        if(it -> getCarId() == carId) break;
+        if (it->getCarId() == carId)
+        {
+            parkedCars.erase(it);
+            cout << "Car removed from the parking lot!" << endl;
+            saveToFile(); 
+            return;
+        }
         it++;
     }
 
-    if (it != parkedCars.end())
-    {
-        parkedCars.erase(it);
-        cout << "Car removed from the parking lot!" << endl;
-
-        saveToFile();
-    }
-    else
-    {
-        cout << "Car not found!" << endl;
-    }
+    cout << "Car not found!" << endl;
 }
 
 void ParkingLot::saveToFile()
@@ -168,17 +159,18 @@ void ParkingLot::saveToFile()
         return;
     }
 
-    for ( auto& car : parkedCars)
+    for (auto& car : parkedCars)
     {
         outputFile << "Driver Name: " << car.getDriverName() << endl;
         outputFile << "Car Name: " << car.getCarName() << endl;
         outputFile << "Car ID: " << car.getCarId() << endl;
         outputFile << "Time of Stay: " << car.getTimeStay() << " hours" << endl;
-        outputFile << "Fee: " << car.getTimeStay() * 40 << ".000 (VND)"<< endl;  
+        outputFile << "Fee: " << car.getTimeStay() * 40 << ".000 (VND)" << endl;
         outputFile << "----------------------" << endl;
     }
 
     outputFile.close();
+    cout << "Data saved to file successfully!" << endl;
 }
 
 void ParkingLot::readFromFile()
@@ -261,7 +253,6 @@ void ParkingLot::searchRecord()
 int main()
 {
     ParkingLot parkingLot("parking_lot.txt");
-    parkingLot.readFromFile();
     parkingLot.searchRecord();
     return 0;
 }
